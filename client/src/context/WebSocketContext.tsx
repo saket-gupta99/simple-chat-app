@@ -26,7 +26,7 @@ export default function WebSocketProvider({
       // https://simple-chat-app-p8ta.onrender.com
       ws = new WebSocket(
         import.meta.env.PROD
-          ? "wss://simple-chat-app-p8ta.onrender.com"
+          ? "wss://simple-chat-app-0e7h.onrender.com"
           : "ws://localhost:8000"
       );
       wsRef.current = ws;

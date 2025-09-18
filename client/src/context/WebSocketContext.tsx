@@ -22,11 +22,11 @@ export default function WebSocketProvider({
 
   useEffect(() => {
     let ws: WebSocket;
-
     function connect() {
+      // https://simple-chat-app-p8ta.onrender.com
       ws = new WebSocket(
         import.meta.env.PROD
-          ? "wss://your-backend.onrender.com"
+          ? "wss://simple-chat-app-p8ta.onrender.com"
           : "ws://localhost:8000"
       );
       wsRef.current = ws;

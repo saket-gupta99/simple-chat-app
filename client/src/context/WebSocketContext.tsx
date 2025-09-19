@@ -23,7 +23,7 @@ export default function WebSocketProvider({
   useEffect(() => {
     let ws: WebSocket;
     function connect() {
-      // https://simple-chat-app-p8ta.onrender.com
+      // https://simple-chat-app-0e7h.onrender.com
       ws = new WebSocket(
         import.meta.env.PROD
           ? "wss://simple-chat-app-0e7h.onrender.com"
@@ -48,7 +48,7 @@ export default function WebSocketProvider({
     return () => ws.close();
   }, []);
 
-  if (!ready) return null;
+  // if (!ready) return null;
 
   return (
     <WebSocketContext.Provider value={{ ws: wsRef.current, ready }}>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useWebSocket } from "../context/WebSocketContext";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import type { IMessageFromServer } from "../Types/customTypes";
@@ -6,8 +6,9 @@ import toast from "react-hot-toast";
 import Button from "../components/Button";
 
 export default function Chat() {
-  const {ws} = useWebSocket();
+  const { ws } = useWebSocket();
   const navigate = useNavigate();
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
   const [searchParams] = useSearchParams();
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<(string | IMessageFromServer)[]>([]);
@@ -16,6 +17,7 @@ export default function Chat() {
   const roomId = searchParams.get("roomId");
 
   const handleSendMessage = () => {
+    if (!ws) return;
     if (!message.trim()) return;
     ws!.send(JSON.stringify({ type: "message", roomId, text: message }));
     setMessages((msg) => [...msg, message]);
@@ -48,6 +50,10 @@ export default function Chat() {
     return () => ws.removeEventListener("message", handleMessage);
   }, [ws, name, roomId, navigate]);
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
   return (
     <div className="w-full md:w-2/3 mx-auto h-screen flex flex-col bg-white shadow-lg rounded-lg overflow-hidden">
       <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50">
@@ -75,6 +81,7 @@ export default function Chat() {
             </div>
           )
         )}
+        <div ref={messagesEndRef}></div>
       </div>
 
       <form

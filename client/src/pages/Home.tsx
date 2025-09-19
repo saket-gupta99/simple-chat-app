@@ -4,9 +4,10 @@ import { useWebSocket } from "../context/WebSocketContext";
 import toast from "react-hot-toast";
 import type { IMessageFromServer } from "../Types/customTypes";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../components/Spinner";
 
 export default function Home() {
-  const {ws, ready} = useWebSocket();
+  const { ws, ready } = useWebSocket();
   const navigate = useNavigate();
   const [roomId, setRoomId] = useState("");
   const [roomData, setRoomData] = useState<{ roomId: string; name: string }>({
@@ -25,7 +26,6 @@ export default function Home() {
   };
 
   const handleJoinRoom = () => {
-    console.log(roomData);
     navigate(`/chat?name=${roomData.name}&roomId=${roomData.roomId}`);
   };
 
@@ -45,6 +45,16 @@ export default function Home() {
     return () => ws.removeEventListener("message", handleMessage);
   }, [ws]);
 
+  if (!ready)
+    return (
+      <div className="flex flex-col h-screen w-full justify-center items-center">
+        <Spinner size={60} />
+        <p className="font-semibold text-gray-600">
+          Please wait while the server is starting (around 50s)...
+        </p>
+      </div>
+    );
+
   return (
     <div className="flex justify-center items-center h-screen w-full ">
       <div className="flex flex-col w-full md:w-2/4 rounded-lg shadow border border-gray-200  p-10 space-y-4 md:space-y-3 ">
@@ -54,10 +64,14 @@ export default function Home() {
             A real time chat application
           </p>
         </div>
-        <Button className="py-3" onClick={() => handleCreateRoom(ws!)} disabled={!ready}>
+        <Button
+          className="py-3"
+          onClick={() => handleCreateRoom(ws!)}
+          disabled={!ready}
+        >
           Create New Room
         </Button>
-         {roomId !== "" && (
+        {roomId !== "" && (
           <div className="flex justify-between items-center bg-gray-50 border border-gray-300 px-4 py-2 rounded-lg text-gray-700">
             <span className="font-mono text-sm">{roomId}</span>
             <Button
